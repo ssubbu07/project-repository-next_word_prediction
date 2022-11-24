@@ -11,10 +11,11 @@ import numpy as np
 import tensorflow as tf
 from keras.models import Sequential, load_model
 from keras.layers import Dense, Activation
-from keras.layers import LSTM, Dropout
+from keras.layers import Embedding, LSTM, Dropout
 from keras.layers import TimeDistributed
 from keras.layers.core import Dense, Activation, Dropout, RepeatVector
 from keras.optimizers import RMSprop
+from tensorflow.keras.optimizers import Adam
 import matplotlib.pyplot as plt
 import pickle
 import sys
@@ -68,7 +69,41 @@ for i, sentence in enumerate(sentences):
     for t, char in enumerate(sentence):
         X[i, t, char_indices[char]] = 1
     y[i, char_indices[next_chars[i]]] = 1
-    
+
+model = Sequential()
+model.add(LSTM(1000, input_shape=(SEQUENCE_LENGTH, len(chars))))
+model.add(Dropout(0.2))
+model.add(Dense(len(chars)))
+model.add(Dense(1,activation='relu'))
+
+model.summary()
+
+model.compile(loss='mse', optimizer='adam', metrics=['accuracy'])
+
+history = model.fit(X, y, validation_split=0.2, verbose=1, batch_size=256, epochs=20, shuffle=True).history
+
+from tensorflow import keras
+from keras.utils.vis_utils import plot_model
+
+keras.utils.plot_model(model, to_file='model.png', show_layer_names=True)
+
+scores = model.evaluate(X, y, verbose=0)
+print("Accuracy: %.2f%%" % (scores[1]*100))
+
+plt.plot(history['accuracy'])
+plt.plot(history['val_accuracy'])
+plt.title('model accuracy')
+plt.ylabel('accuracy')
+plt.xlabel('epoch')
+plt.legend(['train', 'test'], loc='upper left');
+
+plt.plot(history['loss'])
+plt.plot(history['val_loss'])
+plt.title('model loss')
+plt.ylabel('loss')
+plt.xlabel('epoch')
+plt.legend(['train', 'test'], loc='upper left')
+
 model2 = Sequential()
 model2.add(LSTM(512, input_shape=(SEQUENCE_LENGTH, len(chars))))
 model2.add(Dense(len(chars)))
@@ -78,7 +113,7 @@ model2.summary()
 
 optimizer = RMSprop(lr=0.01)
 model2.compile(loss='categorical_crossentropy', optimizer=optimizer, metrics=['accuracy'])
-history = model2.fit(X, y, validation_split=0.05, batch_size=128, epochs=20, shuffle=True).history
+history = model2.fit(X, y, validation_split=0.05, batch_size=256, epochs=20, shuffle=True).history
 
 from tensorflow import keras
 from keras.utils.vis_utils import plot_model
@@ -88,14 +123,12 @@ keras.utils.plot_model(model2, to_file='model.png', show_layer_names=True)
 scores = model2.evaluate(X, y, verbose=0)
 print("Accuracy: %.2f%%" % (scores[1]*100))
 
-
 plt.plot(history['accuracy'])
 plt.plot(history['val_accuracy'])
 plt.title('model accuracy')
 plt.ylabel('accuracy')
 plt.xlabel('epoch')
 plt.legend(['train', 'test'], loc='upper left');
-
 
 plt.plot(history['loss'])
 plt.plot(history['val_loss'])
