@@ -4,3 +4,4 @@ flask-wtf
 WTForms==2.3.3
 gunicorn>=20.0,<21.0
 tflite
+tensorflow
