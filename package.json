@@ -1,0 +1,24 @@
+{
+  "name": "project-repository-next_word_prediction",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "engines": {
+    "python": "3.9.13"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "app.py"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/UNT-CSCE5214/project-repository-next_word_prediction.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/UNT-CSCE5214/project-repository-next_word_prediction/issues"
+  },
+  "homepage": "https://github.com/UNT-CSCE5214/project-repository-next_word_prediction#readme"
+}
